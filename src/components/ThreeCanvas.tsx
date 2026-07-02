@@ -3,133 +3,136 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
-import {
-  // Frontend
-  SiHtml5,
-  SiCss,
-  SiJavascript,
-  SiTypescript,
-  SiReact,
-  SiNextdotjs,
-  SiTailwindcss,
+import { TECH_DATA, SPATIAL_LABELS } from '@/data';
 
-  // Backend
-  SiNodedotjs,
-  SiExpress,
-
-  // Database
-  SiPostgresql,
-  SiMongodb,
-  SiRedis,
-  SiFirebase,
-
-  // State Management
-  SiRedux,
-
-  // API & Auth
-  SiAxios,
-  SiJsonwebtokens,
-  SiSocket,
-
-  // DevOps
-  SiDocker,
-  SiNginx,
-  SiGit,
-  SiGithub,
-  SiGithubactions,
-
-  // Design
-  SiFigma,
-
-  // Languages
-  SiPython,
-
-  // Tools
-  SiLinux,
-  SiPostman,
-  SiNpm,
-
-  // Build Tools
-  SiVite,
-
-  // Container / Runtime
-  SiUbuntu,
-
-  // Package Managers
-  SiYarn,
-
-} from "react-icons/si";
-
-// Tech data items with React Icons brand components mapped to core spatial categories
-const techData = [
-  // Frontend
-  { id: 'html5', name: 'HTML5', category: 'frontend', color: '#e34c26', icon: <SiHtml5 /> },
-  { id: 'css3', name: 'CSS3', category: 'frontend', color: '#1572b6', icon: <SiCss /> },
-  { id: 'javascript', name: 'JavaScript', category: 'frontend', color: '#f7df1e', icon: <SiJavascript /> },
-  { id: 'typescript', name: 'TypeScript', category: 'frontend', color: '#3178c6', icon: <SiTypescript /> },
-  { id: 'react', name: 'React', category: 'frontend', color: '#61dafb', icon: <SiReact /> },
-  { id: 'nextjs', name: 'Next.js', category: 'frontend', color: '#ffffff', icon: <SiNextdotjs /> },
-  { id: 'tailwind', name: 'Tailwind CSS', category: 'frontend', color: '#06b6d4', icon: <SiTailwindcss /> },
-  { id: 'redux', name: 'Redux', category: 'frontend', color: '#764abc', icon: <SiRedux /> },
-  { id: 'figma', name: 'Figma', category: 'frontend', color: '#f24e1e', icon: <SiFigma /> },
-  { id: 'vite', name: 'Vite', category: 'frontend', color: '#646cff', icon: <SiVite /> },
-
-  // Backend
-  { id: 'nodejs', name: 'Node.js', category: 'backend', color: '#339933', icon: <SiNodedotjs /> },
-  { id: 'express', name: 'Express.js', category: 'backend', color: '#ffffff', icon: <SiExpress /> },
-  { id: 'firebase', name: 'Firebase', category: 'backend', color: '#ffca28', icon: <SiFirebase /> },
-  { id: 'axios', name: 'Axios', category: 'backend', color: '#5a29e5', icon: <SiAxios /> },
-  { id: 'socket', name: 'Socket.IO', category: 'backend', color: '#ffffff', icon: <SiSocket /> },
-  { id: 'jwt', name: 'JWT', category: 'backend', color: '#fb015b', icon: <SiJsonwebtokens /> },
-  { id: 'python', name: 'Python', category: 'backend', color: '#3776ab', icon: <SiPython /> },
-  { id: 'postman', name: 'Postman', category: 'backend', color: '#ff6c37', icon: <SiPostman /> },
-  { id: 'npm', name: 'npm', category: 'backend', color: '#cb3837', icon: <SiNpm /> },
-  { id: 'yarn', name: 'Yarn', category: 'backend', color: '#2c8ebb', icon: <SiYarn /> },
-
-  // Database
-  { id: 'postgres', name: 'PostgreSQL', category: 'database', color: '#336791', icon: <SiPostgresql /> },
-  { id: 'mongodb', name: 'MongoDB', category: 'database', color: '#47a248', icon: <SiMongodb /> },
-  { id: 'redis', name: 'Redis', category: 'database', color: '#dc382d', icon: <SiRedis /> },
-  { id: 'docker', name: 'Docker', category: 'database', color: '#2496ed', icon: <SiDocker /> },
-  { id: 'nginx', name: 'Nginx', category: 'database', color: '#009639', icon: <SiNginx /> },
-  { id: 'git', name: 'Git', category: 'database', color: '#f05032', icon: <SiGit /> },
-  { id: 'github', name: 'GitHub', category: 'database', color: '#ffffff', icon: <SiGithub /> },
-  { id: 'githubactions', name: 'GitHub Actions', category: 'database', color: '#2088ff', icon: <SiGithubactions /> },
-  { id: 'linux', name: 'Linux', category: 'database', color: '#fcc624', icon: <SiLinux /> },
-  { id: 'ubuntu', name: 'Ubuntu', category: 'database', color: '#e95420', icon: <SiUbuntu /> }
-];
-
-// Helper to map active sections dynamically to camera targets
 const getCameraTargetForSection = (
   section: string,
+  selectedCategory: string | null | undefined,
   isMobile: boolean,
   isTablet: boolean,
   cubePos: THREE.Vector3,
   pyrPos: THREE.Vector3
 ) => {
-  switch (section) {
+  const target = selectedCategory || section;
+  
+  switch (target) {
     case 'Home':
       return { x: 0, y: 0, z: 15 };
+    case 'Skills':
+      return { x: 0, y: 0, z: 12 };
     case 'Frontend':
       return { x: 0, y: 0.3, z: isMobile ? 6.5 : 8.5 };
     case 'Backend':
       return { x: cubePos.x * 0.7, y: cubePos.y * 0.8, z: isMobile ? 7.0 : 9.0 };
     case 'Database':
       return { x: pyrPos.x * 0.7, y: pyrPos.y * 0.8, z: isMobile ? 7.0 : 9.0 };
-    case 'DevOps':
-      return { x: pyrPos.x * 0.5, y: pyrPos.y * 0.8, z: isMobile ? 6.0 : 8.0 };
-    case 'Tools':
-      return { x: 0, y: isMobile ? -2.2 : -1.8, z: isMobile ? 6.5 : 8.5 };
     default:
       return { x: 0, y: 0, z: 15 };
   }
 };
 
+// --- Scene Setup Helpers ---
+const createLights = () => {
+  const ambient = new THREE.AmbientLight(0x0a101f, 2.0);
+  const central = new THREE.PointLight(0x00f2fe, 15, 25, 1.8);
+  const fill = new THREE.PointLight(0x7f00ff, 8, 20, 2);
+  const dir = new THREE.DirectionalLight(0xffffff, 1.2);
+  
+  central.position.set(0, 0, 0);
+  fill.position.set(5, -2, -2);
+  dir.position.set(5, 8, 5);
+  
+  return { ambient, central, fill, dir };
+};
+
+const createFrontendSphere = () => {
+  const group = new THREE.Group();
+  const innerSphere = new THREE.Mesh(
+    new THREE.SphereGeometry(1.6, 64, 64),
+    new THREE.MeshPhysicalMaterial({ color: 0x050f24, emissive: 0x004488, emissiveIntensity: 0.8, roughness: 0.1, metalness: 0.9, transmission: 0.6, thickness: 1.2, clearcoat: 1.0, clearcoatRoughness: 0.1 })
+  );
+  const outerCage = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(1.85, 2),
+    new THREE.MeshStandardMaterial({ color: 0x00f2fe, wireframe: true, transparent: true, opacity: 0.3, emissive: 0x00f2fe, emissiveIntensity: 0.4 })
+  );
+  group.add(innerSphere, outerCage);
+  return { group, innerSphere, outerCage };
+};
+
+const createBackendCube = () => {
+  const group = new THREE.Group();
+  const geo = new THREE.BoxGeometry(1.1, 1.1, 1.1);
+  const mesh = new THREE.Mesh(
+    geo,
+    new THREE.MeshPhysicalMaterial({ color: 0x4facfe, emissive: 0x0a224c, roughness: 0.2, metalness: 0.7, transmission: 0.7, thickness: 0.6, transparent: true, opacity: 0.85 })
+  );
+  const wireframe = new THREE.LineSegments(
+    new THREE.EdgesGeometry(geo),
+    new THREE.LineBasicMaterial({ color: 0x4facfe, linewidth: 1.5 })
+  );
+  group.add(mesh, wireframe);
+  return { group, mesh, wireframe };
+};
+
+const createDatabasePyramid = () => {
+  const group = new THREE.Group();
+  const geo = new THREE.ConeGeometry(0.7, 1.3, 4);
+  const mesh = new THREE.Mesh(
+    geo,
+    new THREE.MeshPhysicalMaterial({ color: 0x7f00ff, emissive: 0x22054c, roughness: 0.2, metalness: 0.7, transmission: 0.7, thickness: 0.6, transparent: true, opacity: 0.85 })
+  );
+  mesh.rotation.y = Math.PI / 4;
+  
+  const wireframe = new THREE.LineSegments(
+    new THREE.EdgesGeometry(geo),
+    new THREE.LineBasicMaterial({ color: 0x7f00ff, linewidth: 1.5 })
+  );
+  wireframe.rotation.y = Math.PI / 4;
+  
+  group.add(mesh, wireframe);
+  return { group, mesh, wireframe };
+};
+
+const createParticles = () => {
+  const geo = new THREE.BufferGeometry();
+  const positions = new Float32Array(200 * 3);
+  for (let i = 0; i < positions.length; i++) positions[i] = (Math.random() - 0.5) * (i % 3 === 0 ? 30 : 20);
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  return new THREE.Points(
+    geo,
+    new THREE.PointsMaterial({ color: 0x4facfe, size: 0.08, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending })
+  );
+};
+
+// Generate static properties for tech cards to form a spring (helix)
+const CARDS_LOCAL_DATA = TECH_DATA.map((tech) => {
+  const groupArr = TECH_DATA.filter(t => t.group === tech.group);
+  const indexInGroup = groupArr.findIndex(t => t.id === tech.id);
+  const totalInGroup = groupArr.length;
+  
+  // 2 full coils for a distinct spring look
+  const numCoils = 2.0; 
+  const initialAngle = (indexInGroup / totalInGroup) * Math.PI * 2 * numCoils;
+  
+  // Distribute Y from bottom (-1) to top (1)
+  const normalizedY = totalInGroup > 1 ? (indexInGroup / (totalInGroup - 1)) * 2 - 1 : 0;
+  
+  return {
+    id: tech.id,
+    category: tech.category,
+    group: tech.group,
+    angle: initialAngle,
+    springY: normalizedY * 1.2 // Spans from -1.2 to 1.2
+  };
+});
+
 interface ThreeCanvasProps {
   activeSection: string;
+  selectedCategory?: string | null;
+  onSkillSelect?: (category: string) => void;
 }
 
-export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
+export default function ThreeCanvas({ activeSection, selectedCategory, onSkillSelect }: ThreeCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
@@ -147,38 +150,40 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
   const activeSectionRef = useRef(activeSection);
   activeSectionRef.current = activeSection;
 
+  const selectedCategoryRef = useRef(selectedCategory);
+  selectedCategoryRef.current = selectedCategory;
+
   // Camera zoom transitions on activeSection change
   useEffect(() => {
     if (!cameraRef.current || !cubeGroupRef.current || !pyrGroupRef.current) return;
 
     const camera = cameraRef.current;
-    const cubeGroup = cubeGroupRef.current;
-    const pyrGroup = pyrGroupRef.current;
 
     const isMobile = window.innerWidth < 768;
     const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
 
-    const target = getCameraTargetForSection(
+    const targetPos = getCameraTargetForSection(
       activeSection,
+      selectedCategory,
       isMobile,
       isTablet,
-      cubeGroup.position,
-      pyrGroup.position
+      cubeGroupRef.current.position,
+      pyrGroupRef.current.position
     );
 
     gsap.killTweensOf(camera.position);
 
     gsap.to(camera.position, {
-      x: target.x,
-      y: target.y,
-      z: target.z,
+      x: targetPos.x,
+      y: targetPos.y,
+      z: targetPos.z,
       duration: 1.6,
       ease: 'power3.inOut',
       onUpdate: () => {
         camera.lookAt(0, 0, 0);
       }
     });
-  }, [activeSection]);
+  }, [activeSection, selectedCategory]);
 
   useEffect(() => {
     if (!containerRef.current || !canvasRef.current) return;
@@ -207,116 +212,21 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
     scene.add(masterGroup);
 
     // B. SETUP LIGHTS
-    const ambientLight = new THREE.AmbientLight(0x0a101f, 2.0);
-    scene.add(ambientLight);
-
-    const centralLight = new THREE.PointLight(0x00f2fe, 15, 25, 1.8);
-    centralLight.position.set(0, 0, 0);
-    masterGroup.add(centralLight);
-
-    const fillLight = new THREE.PointLight(0x7f00ff, 8, 20, 2);
-    fillLight.position.set(5, -2, -2);
-    masterGroup.add(fillLight);
-
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
-    dirLight.position.set(5, 8, 5);
-    scene.add(dirLight);
+    const lights = createLights();
+    scene.add(lights.ambient, lights.dir);
+    masterGroup.add(lights.central, lights.fill);
 
     // C. BUILD 3D GEOMETRIES
-    // 1. Central Sphere (Frontend)
-    const centralGroup = new THREE.Group();
-    const innerGeo = new THREE.SphereGeometry(1.6, 64, 64);
-    const innerMat = new THREE.MeshPhysicalMaterial({
-      color: 0x050f24,
-      emissive: 0x004488,
-      emissiveIntensity: 0.8,
-      roughness: 0.1,
-      metalness: 0.9,
-      transmission: 0.6,
-      thickness: 1.2,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.1
-    });
-    const innerSphere = new THREE.Mesh(innerGeo, innerMat);
-    centralGroup.add(innerSphere);
-
-    const outerGeo = new THREE.IcosahedronGeometry(1.85, 2);
-    const outerMat = new THREE.MeshStandardMaterial({
-      color: 0x00f2fe,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.3,
-      emissive: 0x00f2fe,
-      emissiveIntensity: 0.4
-    });
-    const outerCage = new THREE.Mesh(outerGeo, outerMat);
-    centralGroup.add(outerCage);
+    const { group: centralGroup, innerSphere, outerCage } = createFrontendSphere();
     masterGroup.add(centralGroup);
 
-    // 2. Cube (Backend)
-    const cubeGroup = new THREE.Group();
-    const cubeGeo = new THREE.BoxGeometry(1.1, 1.1, 1.1);
-    const cubeMat = new THREE.MeshPhysicalMaterial({
-      color: 0x4facfe,
-      emissive: 0x0a224c,
-      roughness: 0.2,
-      metalness: 0.7,
-      transmission: 0.7,
-      thickness: 0.6,
-      transparent: true,
-      opacity: 0.85
-    });
-    const cubeMesh = new THREE.Mesh(cubeGeo, cubeMat);
-    cubeGroup.add(cubeMesh);
-
-    const cubeEdges = new THREE.EdgesGeometry(cubeGeo);
-    const cubeLineMat = new THREE.LineBasicMaterial({ color: 0x4facfe, linewidth: 1.5 });
-    const cubeWireframe = new THREE.LineSegments(cubeEdges, cubeLineMat);
-    cubeGroup.add(cubeWireframe);
+    const { group: cubeGroup, mesh: cubeMesh, wireframe: cubeWireframe } = createBackendCube();
     masterGroup.add(cubeGroup);
 
-    // 3. Pyramid (Database)
-    const pyrGroup = new THREE.Group();
-    const pyrGeo = new THREE.ConeGeometry(0.7, 1.3, 4);
-    const pyrMat = new THREE.MeshPhysicalMaterial({
-      color: 0x7f00ff,
-      emissive: 0x22054c,
-      roughness: 0.2,
-      metalness: 0.7,
-      transmission: 0.7,
-      thickness: 0.6,
-      transparent: true,
-      opacity: 0.85
-    });
-    const pyrMesh = new THREE.Mesh(pyrGeo, pyrMat);
-    pyrMesh.rotation.y = Math.PI / 4;
-    pyrGroup.add(pyrMesh);
-
-    const pyrEdges = new THREE.EdgesGeometry(pyrGeo);
-    const pyrLineMat = new THREE.LineBasicMaterial({ color: 0x7f00ff, linewidth: 1.5 });
-    const pyrWireframe = new THREE.LineSegments(pyrEdges, pyrLineMat);
-    pyrWireframe.rotation.y = Math.PI / 4;
-    pyrGroup.add(pyrWireframe);
+    const { group: pyrGroup, mesh: pyrMesh, wireframe: pyrWireframe } = createDatabasePyramid();
     masterGroup.add(pyrGroup);
 
-    // 4. Background Starry Dust Particles
-    const particleGeo = new THREE.BufferGeometry();
-    const particleCount = 200;
-    const positions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      positions[i] = (Math.random() - 0.5) * 30;
-      positions[i + 1] = (Math.random() - 0.5) * 20;
-      positions[i + 2] = (Math.random() - 0.5) * 20;
-    }
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const particleMat = new THREE.PointsMaterial({
-      color: 0x4facfe,
-      size: 0.08,
-      transparent: true,
-      opacity: 0.5,
-      blending: THREE.AdditiveBlending
-    });
-    const particles = new THREE.Points(particleGeo, particleMat);
+    const particles = createParticles();
     masterGroup.add(particles);
 
     // D. INTERACTION CONFIGURATION
@@ -330,25 +240,8 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
     let orbitRadiusX = 5.5;
     let orbitRadiusZ = 5.5;
 
-    // Generate local properties for tech cards
-    const cardsLocalData = techData.map((tech, i) => {
-      const initialAngle = (i / techData.length) * Math.PI * 2;
-      let yOffset = 0;
-      if (tech.category === 'backend') {
-        yOffset = 1.8;
-      } else if (tech.category === 'database') {
-        yOffset = -1.8;
-      } else {
-        yOffset = 0;
-      }
-      return {
-        id: tech.id,
-        category: tech.category,
-        angle: initialAngle,
-        angleOffset: Math.random() * Math.PI,
-        y: yOffset
-      };
-    });
+    // We clone CARDS_LOCAL_DATA so mutations (like card.angle) only affect this instance
+    const cardsLocalData = CARDS_LOCAL_DATA.map(c => ({ ...c }));
 
     // E. RESPONSIVE SCALING HANDLER
     const handleResize = () => {
@@ -383,14 +276,17 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
     window.addEventListener('resize', handleResize);
     handleResize();
 
-    // Mouse Drag events (WebGL space orbit rotation)
-    const onMouseDown = (e: MouseEvent) => {
+    // Unified Pointer Events (handles Mouse and Touch)
+    const onPointerDown = (e: PointerEvent) => {
       isDragging = true;
       previousMousePosition = { x: e.clientX, y: e.clientY };
+      // Pointer capture ensures dragging works even if cursor leaves the canvas slightly
+      canvas.setPointerCapture(e.pointerId);
     };
 
-    const onMouseMove = (e: MouseEvent) => {
+    const onPointerMove = (e: PointerEvent) => {
       if (!isDragging) {
+        // Parallax effect on hover
         const mouseX = (e.clientX / window.innerWidth) - 0.5;
         const mouseY = (e.clientY / window.innerHeight) - 0.5;
         targetRotationY = currentRotationY + mouseX * 0.25;
@@ -408,41 +304,15 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
       previousMousePosition = { x: e.clientX, y: e.clientY };
     };
 
-    const onMouseUp = () => {
+    const onPointerUp = (e: PointerEvent) => {
       isDragging = false;
+      canvas.releasePointerCapture(e.pointerId);
     };
 
-    // Touch Support
-    const onTouchStart = (e: TouchEvent) => {
-      if (e.touches.length === 1) {
-        isDragging = true;
-        previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      }
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      if (!isDragging || e.touches.length !== 1) return;
-      const deltaX = e.touches[0].clientX - previousMousePosition.x;
-      const deltaY = e.touches[0].clientY - previousMousePosition.y;
-
-      targetRotationY += deltaX * 0.008;
-      targetRotationX += deltaY * 0.008;
-      targetRotationX = Math.max(-Math.PI / 4, Math.min(Math.PI / 4, targetRotationX));
-
-      previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    };
-
-    const onTouchEnd = () => {
-      isDragging = false;
-    };
-
-    canvas.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onMouseUp);
-
-    canvas.addEventListener('touchstart', onTouchStart);
-    window.addEventListener('touchmove', onTouchMove);
-    window.addEventListener('touchend', onTouchEnd);
+    canvas.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointercancel', onPointerUp);
 
     // F. MATHEMATICAL MAPPING LOOP
     const tempV = new THREE.Vector3();
@@ -565,13 +435,35 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
         if (!cardEl) return;
 
         // Card orbit angle increments (slows down when parent category is active)
-        const speed = hoveredCategoryRef.current === card.category ? 0.0006 : 0.002;
+        const activeSelected = selectedCategoryRef.current ? selectedCategoryRef.current.toLowerCase() : null;
+        const isHoveredOrSelected = hoveredCategoryRef.current === card.group || activeSelected === card.group;
+        const speed = isHoveredOrSelected ? 0.0006 : 0.002;
         card.angle += speed;
 
+        let targetX = 0;
+        let targetY = 0;
+        let targetZ = 0;
+        let radiusX = orbitRadiusX;
+        let radiusZ = orbitRadiusZ;
+
+        if (card.group === 'backend') {
+          targetX = cubeGroup.position.x;
+          targetY = cubeGroup.position.y;
+          targetZ = cubeGroup.position.z;
+          radiusX *= 0.6;
+          radiusZ *= 0.6;
+        } else if (card.group === 'database') {
+          targetX = pyrGroup.position.x;
+          targetY = pyrGroup.position.y;
+          targetZ = pyrGroup.position.z;
+          radiusX *= 0.6;
+          radiusZ *= 0.6;
+        }
+
         const localPos = new THREE.Vector3(
-          Math.cos(card.angle) * orbitRadiusX,
-          card.y + Math.sin(card.angle * 2.5 + card.angleOffset) * 0.35,
-          Math.sin(card.angle) * orbitRadiusZ
+          targetX + Math.cos(card.angle) * radiusX,
+          targetY + card.springY,
+          targetZ + Math.sin(card.angle) * radiusZ
         );
 
         const worldPos = localPos.clone().applyMatrix4(masterGroup.matrixWorld);
@@ -602,34 +494,20 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
 
         // Check active section constraints
         const activeSec = activeSectionRef.current;
-        let belongsToActiveSection = true;
-
-        if (activeSec && activeSec !== 'Home') {
-          if (activeSec === 'Frontend' && card.category !== 'frontend') {
-            belongsToActiveSection = false;
-          } else if (activeSec === 'Backend' && card.category !== 'backend') {
-            belongsToActiveSection = false;
-          } else if (activeSec === 'Database' && card.category !== 'database') {
-            belongsToActiveSection = false;
-          } else if (activeSec === 'DevOps') {
-            const isDevOps = card.id === 'docker' || card.id === 'nginx' || card.id === 'git' || card.id === 'github' || card.id === 'githubactions';
-            if (!isDevOps) belongsToActiveSection = false;
-          } else if (activeSec === 'AI & ML') {
-            const isAI = card.id === 'python' || card.id === 'opencv' || card.id === 'tensorflow' || card.id === 'pytorch' || card.id === 'scikitlearn';
-            if (!isAI) belongsToActiveSection = false;
-          } else if (activeSec === 'Tools') {
-            const isTool = card.id === 'linux' || card.id === 'ubuntu' || card.id === 'postman' || card.id === 'npm' || card.id === 'yarn' || card.id === 'vite';
-            if (!isTool) belongsToActiveSection = false;
-          }
-        }
+        let belongsToActiveSection = activeSec === 'Home';
 
         // Fading of non-hovered categories or non-active sections
         if (!belongsToActiveSection) {
           opacity *= 0.05;
           scale *= 0.85;
-        } else if (hoveredCategoryRef.current && card.category !== hoveredCategoryRef.current) {
-          opacity *= 0.3;
-          scale *= 0.9;
+        } else {
+          // If a category is hovered or selected, dim the others
+          const activeSelected = selectedCategoryRef.current ? selectedCategoryRef.current.toLowerCase() : null;
+          const activeFocus = hoveredCategoryRef.current || activeSelected;
+          if (activeFocus && card.group !== activeFocus) {
+            opacity *= 0.15;
+            scale *= 0.85;
+          }
         }
 
         cardEl.style.transform = `translate3d(-50%, -50%, 0) translate3d(${x}px, ${y}px, 0) scale(${scale})`;
@@ -666,15 +544,15 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
 
       // Set active opacity based on hovered category or active section
       const activeSec = activeSectionRef.current;
+      const activeFocus = hoveredCategoryRef.current || (selectedCategoryRef.current ? selectedCategoryRef.current.toLowerCase() : null);
       let shouldDim = false;
-      if (activeSec && activeSec !== 'Home') {
-        if (id === 'sphere-label' && activeSec !== 'Frontend') {
-          shouldDim = true;
-        } else if (id === 'cube-label' && activeSec !== 'Backend' && activeSec !== 'AI & ML') {
-          shouldDim = true;
-        } else if (id === 'pyramid-label' && activeSec !== 'Database' && activeSec !== 'DevOps' && activeSec !== 'Tools') {
-          shouldDim = true;
-        }
+      
+      if (activeSec !== 'Home') {
+        shouldDim = true;
+      } else if (activeFocus) {
+        if (id === 'sphere-label' && activeFocus !== 'frontend') shouldDim = true;
+        if (id === 'cube-label' && activeFocus !== 'backend') shouldDim = true;
+        if (id === 'pyramid-label' && activeFocus !== 'database') shouldDim = true;
       }
 
       if (shouldDim) {
@@ -697,13 +575,10 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
     // G. CLEANUP EVENTS AND TIMERS ON UNMOUNT
     return () => {
       window.removeEventListener('resize', handleResize);
-      canvas.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseup', onMouseUp);
-
-      canvas.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('touchend', onTouchEnd);
+      canvas.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+      window.removeEventListener('pointercancel', onPointerUp);
 
       cancelAnimationFrame(animationFrameId);
       
@@ -729,8 +604,8 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
       <div 
         id="dom-overlay"
         style={{
-          opacity: activeSection === 'Home' ? 1 : 0,
-          pointerEvents: activeSection === 'Home' ? 'auto' : 'none',
+          opacity: (activeSection === 'Home' && !selectedCategory) ? 1 : 0,
+          pointerEvents: (activeSection === 'Home' && !selectedCategory) ? 'auto' : 'none',
           transition: 'opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1)',
         }}
       >
@@ -741,12 +616,14 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
           className="spatial-label core-label"
           onMouseEnter={() => setHoveredCategory('frontend')}
           onMouseLeave={() => setHoveredCategory(null)}
+          onClick={() => onSkillSelect?.('Frontend')}
+          style={{ cursor: 'pointer' }}
         >
           <div className="label-glow"></div>
           <div className="label-content">
-            <span className="label-tag">CORE WORKSPACE</span>
-            <h2 className="label-title">Front-End Dev</h2>
-            <p className="label-desc">Crafting highly interactive, responsive, and immersive interfaces.</p>
+            <span className="label-tag">{SPATIAL_LABELS.frontend.tag}</span>
+            <h2 className="label-title">{SPATIAL_LABELS.frontend.title}</h2>
+            <p className="label-desc">{SPATIAL_LABELS.frontend.desc}</p>
           </div>
         </div>
 
@@ -756,11 +633,13 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
           className="spatial-label secondary-label"
           onMouseEnter={() => setHoveredCategory('backend')}
           onMouseLeave={() => setHoveredCategory(null)}
+          onClick={() => onSkillSelect?.('Backend')}
+          style={{ cursor: 'pointer' }}
         >
           <div className="label-content">
-            <span className="label-tag">SYSTEM LOGIC</span>
-            <h3 className="label-title">Back-End Dev</h3>
-            <p className="label-desc">Designing scalable services, RESTful APIs, and architectural flow.</p>
+            <span className="label-tag">{SPATIAL_LABELS.backend.tag}</span>
+            <h3 className="label-title">{SPATIAL_LABELS.backend.title}</h3>
+            <p className="label-desc">{SPATIAL_LABELS.backend.desc}</p>
           </div>
         </div>
 
@@ -770,17 +649,19 @@ export default function ThreeCanvas({ activeSection }: ThreeCanvasProps) {
           className="spatial-label secondary-label"
           onMouseEnter={() => setHoveredCategory('database')}
           onMouseLeave={() => setHoveredCategory(null)}
+          onClick={() => onSkillSelect?.('Database')}
+          style={{ cursor: 'pointer' }}
         >
           <div className="label-content">
-            <span className="label-tag">INFRASTRUCTURE</span>
-            <h3 className="label-title">Architecture Dev</h3>
-            <p className="label-desc">Managing relational & NoSQL data, orchestration, and deployments.</p>
+            <span className="label-tag">{SPATIAL_LABELS.database.tag}</span>
+            <h3 className="label-title">{SPATIAL_LABELS.database.title}</h3>
+            <p className="label-desc">{SPATIAL_LABELS.database.desc}</p>
           </div>
         </div>
 
         {/* Floating tech cards */}
         <div id="floating-cards-container">
-          {techData.map((tech) => (
+          {TECH_DATA.map((tech) => (
             <div
               key={tech.id}
               id={`card-${tech.id}`}

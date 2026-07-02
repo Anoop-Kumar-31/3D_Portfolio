@@ -8,11 +8,11 @@ export default function Footer() {
           <span className="mouse-wheel"></span>
         </span>
         <span className="hint-text">
-          Hover shapes and logos to explore connections. Drag to rotate space.
+          Hover shapes & logos to explore connections. Drag to rotate space.
         </span>
       </div>
       <div className="copyright">
-        &copy; 2026 Anoop Kumar. All rights reserved.
+        Anoop Kumar &copy; 2026
       </div>
     </footer>
   );

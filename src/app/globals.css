@@ -376,7 +376,6 @@ a {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 50;
     pointer-events: auto;
 }
 
@@ -623,7 +622,7 @@ a {
     left: 0;
     width: 100%;
     height: var(--footer-height);
-    padding: 0 60px;
+    padding: 0 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -840,7 +839,7 @@ a {
     flex-direction: column;
     align-items: flex-end;
     gap: 6px;
-    z-index: 100;
+    z-index: 9999;
     pointer-events: auto;
     padding: 12px 10px;
     border-radius: 16px;
@@ -983,7 +982,7 @@ a {
 .category-panel-container {
     position: fixed;
     left: 80px;
-    top: 50%;
+    top: 15%;
     transform: translateY(-50%);
     width: 460px;
     max-height: 80vh;
@@ -995,10 +994,12 @@ a {
     padding: 25px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5),
         inset 0 1px 1px rgba(255, 255, 255, 0.1);
-    z-index: 10;
+    z-index: 99999;
     opacity: 0;
     animation: panelFadeIn 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     overflow-y: auto;
+    backdrop-filter: blur(5px);
+    pointer-events: auto;
 }
 
 @keyframes panelFadeIn {
@@ -1009,7 +1010,7 @@ a {
 
     to {
         opacity: 1;
-        transform: translateY(-50%) scale(1);
+        transform: translateY(0%) scale(1);
     }
 }
 
@@ -1157,4 +1158,78 @@ a {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* --------------------------------------------------
+ * PROJECT SECTION STYLES
+ * -------------------------------------------------- */
+
+@media (min-width: 900px) {
+    .project-card.reverse-layout {
+        flex-direction: row-reverse !important;
+    }
+}
+
+@media (max-width: 899px) {
+    .project-card {
+        flex-direction: column !important;
+    }
+
+    .project-image-container {
+        min-height: 250px !important;
+    }
+
+    .project-card.reverse-layout {
+        flex-direction: column !important;
+    }
+}
+
+.project-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+}
+
+.project-image-bg:hover {
+    transform: scale(1.05);
+}
+
+.view-case-btn {
+    transition: all 0.3s ease;
+}
+
+.view-case-btn:hover {
+    background: #00e5f2 !important;
+    transform: scale(1.05);
+}
+
+.project-icon-link {
+    color: rgba(255, 255, 255, 0.6);
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.project-icon-link:hover {
+    color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
 }

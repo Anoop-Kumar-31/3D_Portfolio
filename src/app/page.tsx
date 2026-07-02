@@ -8,12 +8,15 @@ import ThreeCanvas from '@/components/ThreeCanvas';
 import Footer from '@/components/Footer';
 import DotNav from '@/components/DotNav';
 import CategoryPanel from '@/components/CategoryPanel';
+import SkillsList from '@/components/SkillsList';
+import ProjectsSection from '@/components/ProjectsSection';
 
-const SECTIONS = ['Home', 'Frontend', 'Backend', 'Database', 'DevOps', 'Tools'];
+import { SECTIONS } from '@/data';
 
 export default function Home() {
   const [isIntroComplete, setIsIntroComplete] = useState(false);
   const [activeSection, setActiveSection] = useState('Home');
+  const [selectedSkillCategory, setSelectedSkillCategory] = useState<string | null>(null);
 
   // Multi-section scroll and swipe navigation logic
   useEffect(() => {
@@ -37,23 +40,37 @@ export default function Home() {
     };
 
     const handleWheel = (e: WheelEvent) => {
-      // Skip section change if scrolling inside the category panel
+      // Skip section change if over the category panel
       if (isOverPanel(e.clientX, e.clientY)) return;
+
+      const target = e.target as HTMLElement;
+      const scrollable = target && target.closest ? target.closest('.modal-content, .projects-container, .skills-list-container') as HTMLElement : null;
+      
+      if (scrollable) {
+        const { scrollTop, scrollHeight, clientHeight } = scrollable;
+        const isAtTop = scrollTop <= 0;
+        const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) <= 1;
+
+        if (e.deltaY > 0 && !isAtBottom) return; // scrolling down but not at bottom -> let container scroll
+        if (e.deltaY < 0 && !isAtTop) return;    // scrolling up but not at top -> let container scroll
+      }
 
       const now = Date.now();
       if (now - lastScrollTime < cooldown) return;
 
       const currentIndex = SECTIONS.indexOf(activeSection);
-      if (e.deltaY > 0) {
+      if (e.deltaY > 50) {
         // Scroll Down -> Next Section
         if (currentIndex < SECTIONS.length - 1) {
           setActiveSection(SECTIONS[currentIndex + 1]);
+          setSelectedSkillCategory(null);
           lastScrollTime = now;
         }
-      } else if (e.deltaY < 0) {
+      } else if (e.deltaY < -50) {
         // Scroll Up -> Previous Section
         if (currentIndex > 0) {
           setActiveSection(SECTIONS[currentIndex - 1]);
+          setSelectedSkillCategory(null);
           lastScrollTime = now;
         }
       }
@@ -64,33 +81,58 @@ export default function Home() {
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
-      // Skip section change if swiping inside the category panel
       const touch = e.changedTouches[0];
       if (touch && isOverPanel(touch.clientX, touch.clientY)) return;
 
+      const touchEndY = e.changedTouches[0].clientY;
+      const diffY = touchStartY - touchEndY; // positive if swiped up (scrolling down)
+
+      const target = e.target as HTMLElement;
+      const scrollable = target && target.closest ? target.closest('.modal-content, .projects-container, .skills-list-container') as HTMLElement : null;
+      
+      if (scrollable) {
+        const { scrollTop, scrollHeight, clientHeight } = scrollable;
+        const isAtTop = scrollTop <= 0;
+        const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) <= 1;
+
+        if (diffY > 0 && !isAtBottom) return; // swiped up but not at bottom
+        if (diffY < 0 && !isAtTop) return;    // swiped down but not at top
+      }
+
       const now = Date.now();
       if (now - lastScrollTime < cooldown) return;
-
-      const touchEndY = e.changedTouches[0].clientY;
-      const diffY = touchStartY - touchEndY;
 
       const currentIndex = SECTIONS.indexOf(activeSection);
       if (diffY > 50) {
         // Swipe Up -> Next Section
         if (currentIndex < SECTIONS.length - 1) {
           setActiveSection(SECTIONS[currentIndex + 1]);
+          setSelectedSkillCategory(null);
           lastScrollTime = now;
         }
       } else if (diffY < -50) {
         // Swipe Down -> Previous Section
         if (currentIndex > 0) {
           setActiveSection(SECTIONS[currentIndex - 1]);
+          setSelectedSkillCategory(null);
           lastScrollTime = now;
         }
       }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const scrollable = target && target.closest ? target.closest('.modal-content, .projects-container, .skills-list-container') as HTMLElement : null;
+      
+      if (scrollable) {
+        const { scrollTop, scrollHeight, clientHeight } = scrollable;
+        const isAtTop = scrollTop <= 0;
+        const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) <= 1;
+
+        if ((e.key === 'ArrowDown' || e.key === 'PageDown') && !isAtBottom) return;
+        if ((e.key === 'ArrowUp' || e.key === 'PageUp') && !isAtTop) return;
+      }
+
       const now = Date.now();
       if (now - lastScrollTime < cooldown) return;
 
@@ -98,11 +140,13 @@ export default function Home() {
       if (e.key === 'ArrowDown' || e.key === 'PageDown') {
         if (currentIndex < SECTIONS.length - 1) {
           setActiveSection(SECTIONS[currentIndex + 1]);
+          setSelectedSkillCategory(null);
           lastScrollTime = now;
         }
       } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
         if (currentIndex > 0) {
           setActiveSection(SECTIONS[currentIndex - 1]);
+          setSelectedSkillCategory(null);
           lastScrollTime = now;
         }
       }
@@ -135,12 +179,24 @@ export default function Home() {
       {isIntroComplete && (
         <div id="app-container" className="app-content-fade-in">
           <Navbar activeSection={activeSection} />
-          <ThreeCanvas activeSection={activeSection} />
-          <CategoryPanel activeSection={activeSection} />
+          <ThreeCanvas 
+            activeSection={activeSection} 
+            selectedCategory={selectedSkillCategory}
+            onSkillSelect={setSelectedSkillCategory} 
+          />
+          <CategoryPanel 
+            selectedCategory={selectedSkillCategory} 
+            onClose={() => setSelectedSkillCategory(null)} 
+          />
+          <SkillsList activeSection={activeSection} />
+          <ProjectsSection activeSection={activeSection} />
           <DotNav 
             sections={SECTIONS} 
             activeSection={activeSection} 
-            setActiveSection={setActiveSection} 
+            setActiveSection={(sec: string) => {
+              setActiveSection(sec);
+              setSelectedSkillCategory(null);
+            }} 
           />
           <Footer />
         </div>
