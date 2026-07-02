@@ -38,7 +38,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
           {displayedText}
         </a>
         <a 
-          href="https://github.com" 
+          href="https://github.com/Anoop-Kumar-31" 
           target="_blank" 
           rel="noopener noreferrer" 
           className="nav-link nav-icon" 
@@ -49,7 +49,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
           </svg>
         </a>
         <a 
-          href="https://linkedin.com" 
+          href="https://www.linkedin.com/in/anoop--kumar" 
           target="_blank" 
           rel="noopener noreferrer" 
           className="nav-link nav-icon" 

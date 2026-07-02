@@ -10,6 +10,7 @@ import DotNav from '@/components/DotNav';
 import CategoryPanel from '@/components/CategoryPanel';
 import SkillsList from '@/components/SkillsList';
 import ProjectsSection from '@/components/ProjectsSection';
+import AboutSection from '@/components/AboutSection';
 
 import { SECTIONS } from '@/data';
 
@@ -44,7 +45,7 @@ export default function Home() {
       if (isOverPanel(e.clientX, e.clientY)) return;
 
       const target = e.target as HTMLElement;
-      const scrollable = target && target.closest ? target.closest('.modal-content, .projects-container, .skills-list-container') as HTMLElement : null;
+      const scrollable = target && target.closest ? target.closest('.modal-content, .projects-container, .skills-list-container, .about-container') as HTMLElement : null;
       
       if (scrollable) {
         const { scrollTop, scrollHeight, clientHeight } = scrollable;
@@ -88,7 +89,7 @@ export default function Home() {
       const diffY = touchStartY - touchEndY; // positive if swiped up (scrolling down)
 
       const target = e.target as HTMLElement;
-      const scrollable = target && target.closest ? target.closest('.modal-content, .projects-container, .skills-list-container') as HTMLElement : null;
+      const scrollable = target && target.closest ? target.closest('.modal-content, .projects-container, .skills-list-container, .about-container') as HTMLElement : null;
       
       if (scrollable) {
         const { scrollTop, scrollHeight, clientHeight } = scrollable;
@@ -122,7 +123,7 @@ export default function Home() {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
-      const scrollable = target && target.closest ? target.closest('.modal-content, .projects-container, .skills-list-container') as HTMLElement : null;
+      const scrollable = target && target.closest ? target.closest('.modal-content, .projects-container, .skills-list-container, .about-container') as HTMLElement : null;
       
       if (scrollable) {
         const { scrollTop, scrollHeight, clientHeight } = scrollable;
@@ -190,6 +191,7 @@ export default function Home() {
           />
           <SkillsList activeSection={activeSection} />
           <ProjectsSection activeSection={activeSection} />
+          <AboutSection activeSection={activeSection} />
           <DotNav 
             sections={SECTIONS} 
             activeSection={activeSection} 

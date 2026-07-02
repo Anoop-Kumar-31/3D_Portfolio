@@ -25,7 +25,7 @@ export default function SkillsList({ activeSection }: SkillsListProps) {
         animation: 'panelFadeIn 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards'
       }}
     >
-      <div style={{ maxWidth: '1000px', width: '100%' }}>
+      <div style={{ maxWidth: '1200px', width: '100%' }}>
         <h1 style={{ fontSize: '3rem', fontWeight: 700, marginBottom: '10px', color: '#fff' }}>All Skills</h1>
         <p style={{ fontSize: '1.2rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '40px' }}>
           A comprehensive overview of the technologies I work with.
@@ -41,7 +41,7 @@ export default function SkillsList({ activeSection }: SkillsListProps) {
                 WebkitBackdropFilter: 'blur(12px)',
                 border: '1px solid rgba(255, 255, 255, 0.05)',
                 borderRadius: '24px',
-                padding: '25px',
+                padding: '20px ',
                 boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
               }}
             >
